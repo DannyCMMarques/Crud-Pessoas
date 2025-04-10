@@ -13,103 +13,105 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crud.demo.models.Endereco;
 import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.PessoaDTO;
+import com.crud.demo.models.mappers.PessoaMappers;
 import com.crud.demo.repositories.EnderecoRepository;
 import com.crud.demo.repositories.PessoaRepository;
+import com.crud.demo.validators.PessoaValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class PessoasServiceTest {
 
     @InjectMocks
-private PessoaService pessoaService;
+    private PessoaServiceImpl pessoaService;
+
     @Mock
-private PessoaRepository pessoaRepository;
+    private PessoaRepository pessoaRepository;
+
     @Mock
-private EnderecoRepository enderecoRepository;
+    private EnderecoRepository enderecoRepository;
 
-private Endereco endereco1;
-private Endereco endereco2;
+    @Mock
+    private PessoaValidator pessoaValidator;
 
-private Pessoa pessoa;
+    @Spy
+    private PessoaMappers pessoaMappers;
 
-@BeforeEach
-public void setUp() {
-    endereco1 = Endereco.builder()
-    .rua("Rua 1")
-    .numero(123)
-    .bairro("Bairro 1")
-    .cidade("Cidade 1")
-    .estado("Estado 1")
-    .CEP("12345-678")
-    .build();
+    private Endereco endereco1;
+    private Endereco endereco2;
+    private Pessoa pessoa;
+    private PessoaDTO pessoaDTO;
 
-    endereco2 = Endereco.builder()
-    .rua("Rua 2")
-    .numero(456)
-    .bairro("Bairro 2")
-    .cidade("Cidade 2")
-    .estado("Estado 2")
-    .CEP("98765-432")
-    .build();
+    @BeforeEach
+    public void setUp() {
+        endereco1 = Endereco.builder()
+                .rua("Rua 1").numero(123).bairro("Bairro 1").cidade("Cidade 1").estado("Estado 1").CEP("12345-678")
+                .build();
 
-pessoa = Pessoa.builder()
-    .nome("Nome 1")
-    .CPF("123.456.789-00")
-    .dataNascimento(LocalDate.of(2000, 1, 1))
-    .enderecos(List.of(endereco1, endereco2))
-    .build();
+        endereco2 = Endereco.builder()
+                .rua("Rua 2").numero(456).bairro("Bairro 2").cidade("Cidade 2").estado("Estado 2").CEP("98765-432")
+                .build();
 
-}
-@DisplayName("Deve salvar uma pessoa com dois endereços corretamente")
-@Test
-public void deveCriarPessoaCorretamente(){
-  when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoa);
-    Pessoa pessoaCriada = pessoaService.criarPessoa(pessoa);
+        pessoa = Pessoa.builder()
+                .id(1L)
+                .nome("Nome 1")
+                .CPF("123.456.789-00")
+                .dataNascimento(LocalDate.of(2000, 1, 1))
+                .enderecos(List.of(endereco1, endereco2))
+                .build();
 
-        verify(pessoaRepository, times(1)).save(any(Pessoa.class));
-        verify(enderecoRepository, times(2)).save(any(Endereco.class));
-        assertEquals("123.456.789-00", pessoaCriada.getCPF());
-        assertEquals(2, pessoaCriada.getEnderecos().size());
-        assertEquals(pessoa, pessoaCriada);
+        pessoaDTO = pessoaMappers.toDto(pessoa);
+    }
 
-}
+    @Test
+    @DisplayName("Deve salvar uma pessoa com dois endereços corretamente")
+    public void deveCriarPessoaCorretamente() {
+        when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoa);
+        doNothing().when(pessoaValidator).validarCadastro(anyString());
 
-@DisplayName("Deve buscar uma pessoa pelo ID")
-@Test
-public void deveBuscarPessoaPorID() {
-    when(pessoaRepository.findById(1L)).thenReturn(java.util.Optional.of(pessoa));
+        PessoaDTO resultado = pessoaService.criarPessoa(pessoaDTO);
 
-    PessoaDTO  pessoaEncontrada = pessoaService.buscarPessoaPorId(1L);
+        verify(pessoaValidator).validarCadastro("123.456.789-00");
+        verify(pessoaRepository).save(any(Pessoa.class));
+        assertEquals("123.456.789-00", resultado.getCPF());
+        assertEquals(2, resultado.getEnderecos().size());
+    }
 
-    verify(pessoaRepository, times(1)).findById(1L);
-    assertEquals("Nome 1", pessoaEncontrada.getNome());
-    assertEquals("123.456.789-00", pessoaEncontrada.getCPF());
-    assertIterableEquals(List.of(endereco1, endereco2),pessoaEncontrada.getEnderecos());
-    assertEquals(2, pessoaEncontrada.getEnderecos().size());
+    @Test
+    @DisplayName("Deve buscar uma pessoa pelo ID")
+    public void deveBuscarPessoaPorID() {
+        when(pessoaValidator.validarExistencia(1L)).thenReturn(pessoa);
 
-}
+        PessoaDTO resultado = pessoaService.buscarPessoaPorId(1L);
 
-@DisplayName("Deve buscar todas as pessoas")
-@Test
-public void deveRetornarTodasPessoas() {
-    when(pessoaRepository.findAll()).thenReturn(List.of(pessoa));
+        verify(pessoaValidator).validarExistencia(1L);
+        assertEquals("Nome 1", resultado.getNome());
+        assertEquals("123.456.789-00", resultado.getCPF());
+        assertEquals(2, resultado.getEnderecos().size());
+    }
 
-    List<PessoaDTO> pessoasEncontradas = pessoaService.buscarTodasPessoas();
+    @Test
+    @DisplayName("Deve buscar todas as pessoas")
+    public void deveRetornarTodasPessoas() {
+        when(pessoaRepository.findAll()).thenReturn(List.of(pessoa));
 
-    verify(pessoaRepository, times(1)).findAll();
-    assertEquals(1, pessoasEncontradas.size());
-    assertEquals("Nome 1", pessoasEncontradas.get(0).getNome());
-    assertEquals("123.456.789-00", pessoasEncontradas.get(0).getCPF());
-    assertIterableEquals(List.of(endereco1, endereco2),pessoasEncontradas.get(0).getEnderecos())
+        List<PessoaDTO> resultado = pessoaService.buscarTodasPessoas();
 
-}
+        verify(pessoaRepository).findAll();
+        assertEquals(1, resultado.size());
+        assertEquals("Nome 1", resultado.get(0).getNome());
+        assertEquals("123.456.789-00", resultado.get(0).getCPF());
+        assertEquals(2, resultado.get(0).getEnderecos().size());
+        assertEquals("Rua 1", resultado.get(0).getEnderecos().get(0).getRua());
+    }
 
+    @Test
 @DisplayName("Deve atualizar uma pessoa")
-@Test
 public void deveAtualizarPessoa() {
     Pessoa pessoaAtualizada = Pessoa.builder()
             .id(1L)
@@ -119,25 +121,26 @@ public void deveAtualizarPessoa() {
             .enderecos(List.of(endereco1))
             .build();
 
-    when(pessoaRepository.findById(1L)).thenReturn(java.util.Optional.of(pessoa));
     when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoaAtualizada);
 
-    Pessoa pessoaRetornada = pessoaService.atualizarPessoa(pessoaAtualizada);
+    PessoaDTO pessoaDTOAtualizada = pessoaMappers.toDto(pessoaAtualizada);
+    pessoaDTOAtualizada.setId(1L);
 
-    verify(pessoaRepository, times(1)).findById(1L);
-    verify(pessoaRepository, times(1)).save(any(Pessoa.class));
-    assertEquals("Nome Atualizado", pessoaRetornada.getNome());
-    assertEquals(1, pessoaRetornada.getEnderecos().size());
+    PessoaDTO resultado = pessoaService.atualizarPessoa(pessoaDTOAtualizada);
 
+    verify(pessoaRepository).save(any(Pessoa.class));
+
+    assertEquals("Nome Atualizado", resultado.getNome());
+    assertEquals(1, resultado.getEnderecos().size());
 }
-@DisplayName("Deve deletar uma pessoa")
-@Test
-public void deveDeletarPessoa() {
-    when(pessoaRepository.findById(1L)).thenReturn(java.util.Optional.of(pessoa));
+    @Test
+    @DisplayName("Deve deletar uma pessoa")
+    public void deveDeletarPessoa() {
+        when(pessoaValidator.validarExistencia(1L)).thenReturn(pessoa);
 
-    pessoaService.deletarPessoa(1L);
+        pessoaService.deletarPessoa(1L);
 
-    verify(pessoaRepository, times(1)).findById(1L);
-    verify(pessoaRepository, times(1)).deleteById(1L);
-}
+        verify(pessoaValidator).validarExistencia(1L);
+        verify(pessoaRepository).deleteById(1L);
+    }
 }

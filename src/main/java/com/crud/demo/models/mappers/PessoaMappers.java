@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.crud.demo.models.Endereco;
 import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.EnderecoDTO;
 import com.crud.demo.models.DTO.PessoaDTO;
 
+@Component
 public class PessoaMappers {
     public Pessoa toEntity(PessoaDTO dto) {
 
