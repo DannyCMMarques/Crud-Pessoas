@@ -22,11 +22,17 @@ public class Endereco {
 @Id
 @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
 private long id;
+
 private String rua;
+
 private long numero;
+
 private String bairro;
+
 private String cidade;
+
 private String estado;
+
 private String CEP;
 
 }
