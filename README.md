@@ -201,9 +201,9 @@ src
                     │
                     ├── services
                     │   ├── contratos
-                    │   │   └── PessoaService.java
+                    │   │   └── PessoaService.java  # Define a interface com as regras de negócio expostas pelos serviços.
                     │   └── PessoaServiceImpl.java
-                            # Define a interface com as regras de negócio expostas pelos serviços.
+                            
                     │
                     ├── validators
                     │   └── PessoaValidator.java
@@ -211,6 +211,21 @@ src
                     │
                     └── DemoApplication.java
 ```
+
+## 🧪 Testes
+
+- ✅ **Integração no Controller**  
+  Testes com `@SpringBootTest` e `MockMvc` validando os endpoints da `PessoaController`, cobrindo requisições reais, respostas esperadas e tratamento de exceções como pessoa não encontrada.
+
+- ✅ **Unitários no Service**  
+  Testes com `Mockito` simulando os repositórios para validar a lógica da `PessoaServiceImpl`: criação, atualização, exclusão e exibição.
+
+<img src="https://github.com/user-attachments/assets/af283c3d-511a-4a60-979f-635acd662b1a" width="500"/>
+
+---
+
+
+---
 
 ---
 
