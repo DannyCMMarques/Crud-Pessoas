@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.PessoaDTO;
+import com.crud.demo.models.mappers.EnderecoMapper;
 import com.crud.demo.models.mappers.PessoaMappers;
 import com.crud.demo.repositories.EnderecoRepository;
 import com.crud.demo.repositories.PessoaRepository;
@@ -26,10 +26,8 @@ import com.crud.demo.validators.PessoaValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class PessoasServiceTest {
-
-    @InjectMocks
-    private PessoaServiceImpl pessoaService;
-
+@InjectMocks
+  private PessoaServiceImpl pessoaService;
     @Mock
     private PessoaRepository pessoaRepository;
 
@@ -39,21 +37,30 @@ public class PessoasServiceTest {
     @Mock
     private PessoaValidator pessoaValidator;
 
-    @Spy
+    @Mock
+    private EnderecoMapper enderecoMapper;
+
     private PessoaMappers pessoaMappers;
+
+
 
     private Pessoa pessoa;
     private PessoaDTO pessoaDTO;
 
     @BeforeEach
     public void setUp() {
+        pessoaMappers = new PessoaMappers(enderecoMapper);
+        pessoaService = new PessoaServiceImpl(pessoaRepository, pessoaMappers, pessoaValidator);
+
         pessoa = TestDataFactory.criarPessoaEntity();
-        pessoaDTO = pessoaMappers.toDto(pessoa);
+        pessoaDTO = TestDataFactory.criarPessoaDTOValida();
     }
 
     @Test
     @DisplayName("Deve salvar uma pessoa com dois endereços corretamente")
     public void deveCriarPessoaCorretamente() {
+        when(enderecoMapper.toEntityList(any())).thenReturn(pessoa.getEnderecos());
+        when(enderecoMapper.toDtoList(any())).thenReturn(pessoaDTO.getEnderecos());
         when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoa);
         doNothing().when(pessoaValidator).validarCadastro(anyString());
 
@@ -69,6 +76,7 @@ public class PessoasServiceTest {
     @DisplayName("Deve buscar uma pessoa pelo ID")
     public void deveBuscarPessoaPorID() {
         when(pessoaValidator.validarExistencia(1L)).thenReturn(pessoa);
+        when(enderecoMapper.toDtoList(any())).thenReturn(pessoaDTO.getEnderecos());
 
         PessoaDTO resultado = pessoaService.buscarPessoaPorId(1L);
 
@@ -82,6 +90,7 @@ public class PessoasServiceTest {
     @DisplayName("Deve buscar todas as pessoas")
     public void deveRetornarTodasPessoas() {
         when(pessoaRepository.findAll()).thenReturn(List.of(pessoa));
+        when(enderecoMapper.toDtoList(any())).thenReturn(pessoaDTO.getEnderecos());
 
         List<PessoaDTO> resultado = pessoaService.buscarTodasPessoas();
 
@@ -103,13 +112,16 @@ public class PessoasServiceTest {
                 .enderecos(List.of(TestDataFactory.criarEndereco1()))
                 .build();
 
+        when(pessoaValidator.validarExistencia(1L)).thenReturn(pessoa);
+        when(enderecoMapper.toEntityList(any())).thenReturn(pessoaAtualizada.getEnderecos());
+        when(enderecoMapper.toDtoList(any())).thenReturn(
+                List.of(TestDataFactory.criarEnderecoDTO1())
+        );
         when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoaAtualizada);
 
-        PessoaDTO pessoaDTOAtualizada = pessoaMappers.toDto(pessoaAtualizada);
-        pessoaDTOAtualizada.setId(1L);
+        PessoaDTO resultado = pessoaService.atualizarPessoa(1L, pessoaDTO);
 
-        PessoaDTO resultado = pessoaService.atualizarPessoa(1L, pessoaDTOAtualizada);
-
+        verify(pessoaValidator).validarExistencia(1L);
         verify(pessoaRepository).save(any(Pessoa.class));
         assertEquals(TestDataFactory.NOME_ATUALIZADO, resultado.getNome());
         assertEquals(1, resultado.getEnderecos().size());

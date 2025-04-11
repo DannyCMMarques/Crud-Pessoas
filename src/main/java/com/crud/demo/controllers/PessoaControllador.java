@@ -34,13 +34,13 @@ public class PessoaControllador {
         }
 
         @DeleteMapping("{id}")
-        public ResponseEntity<Void> excluirCliente(@PathVariable long id) {
+        public ResponseEntity<Void> excluirPessoa(@PathVariable long id) {
             pessoaService.deletarPessoa(id);
             return ResponseEntity.noContent().build();
         }
 
         @PutMapping("{id}")
-        public ResponseEntity<PessoaDTO> atualizarCadastroCliente(@PathVariable long id,
+        public ResponseEntity<PessoaDTO> atualizarCadastroPessoa(@PathVariable long id,
                 @Valid @RequestBody PessoaDTO pessoaAtualizadoDTO) {
             PessoaDTO atualizado = pessoaService.atualizarPessoa(id, pessoaAtualizadoDTO);
             return ResponseEntity.ok(atualizado);
@@ -54,7 +54,7 @@ public class PessoaControllador {
 
         @GetMapping
         public ResponseEntity<List<PessoaDTO>> exibirPessoas() {
-            List<PessoaDTO> clientes = pessoaService.buscarTodasPessoas();
-            return ResponseEntity.ok(clientes);
+            List<PessoaDTO> pessoas = pessoaService.buscarTodasPessoas();
+            return ResponseEntity.ok(pessoas);
         }
     }

@@ -7,7 +7,7 @@ import com.crud.demo.Exceptions.ApiException;
 public class PessoaNaoEncontradaException extends ApiException {
 
       public PessoaNaoEncontradaException() {
-                super("Cliente não encontrado", HttpStatus.NOT_FOUND);
+                super("Pessoa não encontrado", HttpStatus.NOT_FOUND);
 
 }
 }

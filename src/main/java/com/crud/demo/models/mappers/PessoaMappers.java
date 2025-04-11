@@ -1,46 +1,31 @@
 package com.crud.demo.models.mappers;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.crud.demo.models.Endereco;
 import com.crud.demo.models.Pessoa;
-import com.crud.demo.models.DTO.EnderecoDTO;
 import com.crud.demo.models.DTO.PessoaDTO;
 
-@Component
-public class PessoaMappers {
-    public Pessoa toEntity(PessoaDTO dto) {
+import lombok.RequiredArgsConstructor;
 
-        Pessoa pessoa = Pessoa.builder()
-        .id(dto.getId())
+
+@Component
+@RequiredArgsConstructor
+public class PessoaMappers {
+
+    private final EnderecoMapper enderecoMapper;
+
+    public Pessoa toEntity(PessoaDTO dto) {
+        return Pessoa.builder()
+                .id(dto.getId())
                 .nome(dto.getNome())
                 .cpf(dto.getCpf())
                 .dataNascimento(dto.getDataNascimento())
+                .enderecos(enderecoMapper.toEntityList(
+                        Optional.ofNullable(dto.getEnderecos()).orElse(Collections.emptyList())))
                 .build();
-        List<Endereco> enderecos = Optional.ofNullable(dto.getEnderecos())
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(enderecoDTO -> {
-                    Endereco endereco = Endereco.builder()
-                            // .id(enderecoDTO.getId())
-                            .rua(enderecoDTO.getRua())
-                            .numero(enderecoDTO.getNumero())
-                            .bairro(enderecoDTO.getBairro())
-                            .cidade(enderecoDTO.getCidade())
-                            .estado(enderecoDTO.getEstado())
-                            .CEP(enderecoDTO.getCEP())
-                            .build();
-                    return endereco;
-                })
-                .collect(Collectors.toList());
-
-        pessoa.setEnderecos(enderecos);
-        return pessoa;
     }
 
     public PessoaDTO toDto(Pessoa pessoa) {
@@ -49,24 +34,7 @@ public class PessoaMappers {
         dto.setNome(pessoa.getNome());
         dto.setCpf(pessoa.getCpf());
         dto.setDataNascimento(pessoa.getDataNascimento());
-
-        List<EnderecoDTO> enderecosDTO = pessoa
-                .getEnderecos()
-                .stream()
-                .map(endereco -> {
-                    EnderecoDTO e = new EnderecoDTO();
-                    // e.setId(endereco.getId());
-                    e.setRua(endereco.getRua());
-                    e.setNumero(endereco.getNumero());
-                    e.setBairro(endereco.getBairro());
-                    e.setCidade(endereco.getCidade());
-                    e.setEstado(endereco.getEstado());
-                    e.setCEP(endereco.getCEP());
-                    return e;
-                })
-                .collect(Collectors.toList());
-
-        dto.setEnderecos(enderecosDTO);
+        dto.setEnderecos(enderecoMapper.toDtoList(pessoa.getEnderecos()));
         return dto;
     }
 }
