@@ -27,7 +27,7 @@ public class PessoaMappers {
                 .stream()
                 .map(enderecoDTO -> {
                     Endereco endereco = Endereco.builder()
-                            .id(enderecoDTO.getId())
+                            // .id(enderecoDTO.getId())
                             .rua(enderecoDTO.getRua())
                             .numero(enderecoDTO.getNumero())
                             .bairro(enderecoDTO.getBairro())
@@ -55,7 +55,7 @@ public class PessoaMappers {
                 .stream()
                 .map(endereco -> {
                     EnderecoDTO e = new EnderecoDTO();
-                    e.setId(endereco.getId());
+                    // e.setId(endereco.getId());
                     e.setRua(endereco.getRua());
                     e.setNumero(endereco.getNumero());
                     e.setBairro(endereco.getBairro());

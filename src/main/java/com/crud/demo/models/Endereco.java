@@ -21,7 +21,7 @@ public class Endereco {
 
 @Id
 @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-private long id;
+private Long id;
 
 private String rua;
 

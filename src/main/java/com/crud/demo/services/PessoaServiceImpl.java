@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.PessoaDTO;
 import com.crud.demo.models.mappers.PessoaMappers;
-import com.crud.demo.repositories.EnderecoRepository;
 import com.crud.demo.repositories.PessoaRepository;
 import com.crud.demo.services.contratos.PessoaService;
 import com.crud.demo.validators.PessoaValidator;
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class PessoaServiceImpl implements PessoaService {
 
     private final PessoaRepository pessoaRepository;
-    private final EnderecoRepository enderecoRepository;
     private final PessoaMappers pessoaMappers;
     private final PessoaValidator pessoaValidator;
 
