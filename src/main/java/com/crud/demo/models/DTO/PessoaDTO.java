@@ -13,20 +13,19 @@ import lombok.Data;
 @Data
 public class PessoaDTO {
 
-
     private long id;
     @NotNull(message = "Nome é obrigatório")
     private String nome;
-
-    @Size(min = 11, max = 11, message = "O CPF deve conter exatamente 11 dígitos")
-    private String CPF;
+    @NotNull(message = "cpf é obrigatório")
+    @Size(min = 11, max = 11, message = "O cpf deve conter exatamente 11 dígitos")
+    private String cpf;
 
     private LocalDate dataNascimento;
 
-    private List<EnderecoDTO>enderecos;
+    private List<EnderecoDTO> enderecos;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public Integer getIdade(){
+    public Integer getIdade() {
         if (dataNascimento == null)
             return null;
         return Period.between(dataNascimento, LocalDate.now()).getYears();

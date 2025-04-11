@@ -17,8 +17,9 @@ public class PessoaMappers {
     public Pessoa toEntity(PessoaDTO dto) {
 
         Pessoa pessoa = Pessoa.builder()
+        .id(dto.getId())
                 .nome(dto.getNome())
-                .CPF(dto.getCPF())
+                .cpf(dto.getCpf())
                 .dataNascimento(dto.getDataNascimento())
                 .build();
         List<Endereco> enderecos = Optional.ofNullable(dto.getEnderecos())
@@ -26,6 +27,7 @@ public class PessoaMappers {
                 .stream()
                 .map(enderecoDTO -> {
                     Endereco endereco = Endereco.builder()
+                            .id(enderecoDTO.getId())
                             .rua(enderecoDTO.getRua())
                             .numero(enderecoDTO.getNumero())
                             .bairro(enderecoDTO.getBairro())
@@ -43,8 +45,9 @@ public class PessoaMappers {
 
     public PessoaDTO toDto(Pessoa pessoa) {
         PessoaDTO dto = new PessoaDTO();
+        dto.setId(pessoa.getId());
         dto.setNome(pessoa.getNome());
-        dto.setCPF(pessoa.getCPF());
+        dto.setCpf(pessoa.getCpf());
         dto.setDataNascimento(pessoa.getDataNascimento());
 
         List<EnderecoDTO> enderecosDTO = pessoa
@@ -52,6 +55,7 @@ public class PessoaMappers {
                 .stream()
                 .map(endereco -> {
                     EnderecoDTO e = new EnderecoDTO();
+                    e.setId(endereco.getId());
                     e.setRua(endereco.getRua());
                     e.setNumero(endereco.getNumero());
                     e.setBairro(endereco.getBairro());

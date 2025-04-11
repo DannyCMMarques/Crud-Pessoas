@@ -60,7 +60,7 @@ public class PessoasServiceTest {
         pessoa = Pessoa.builder()
                 .id(1L)
                 .nome("Nome 1")
-                .CPF("123.456.789-00")
+                .cpf("123.456.789-00")
                 .dataNascimento(LocalDate.of(2000, 1, 1))
                 .enderecos(List.of(endereco1, endereco2))
                 .build();
@@ -78,7 +78,7 @@ public class PessoasServiceTest {
 
         verify(pessoaValidator).validarCadastro("123.456.789-00");
         verify(pessoaRepository).save(any(Pessoa.class));
-        assertEquals("123.456.789-00", resultado.getCPF());
+        assertEquals("123.456.789-00", resultado.getCpf());
         assertEquals(2, resultado.getEnderecos().size());
     }
 
@@ -91,7 +91,7 @@ public class PessoasServiceTest {
 
         verify(pessoaValidator).validarExistencia(1L);
         assertEquals("Nome 1", resultado.getNome());
-        assertEquals("123.456.789-00", resultado.getCPF());
+        assertEquals("123.456.789-00", resultado.getCpf());
         assertEquals(2, resultado.getEnderecos().size());
     }
 
@@ -105,7 +105,7 @@ public class PessoasServiceTest {
         verify(pessoaRepository).findAll();
         assertEquals(1, resultado.size());
         assertEquals("Nome 1", resultado.get(0).getNome());
-        assertEquals("123.456.789-00", resultado.get(0).getCPF());
+        assertEquals("123.456.789-00", resultado.get(0).getCpf());
         assertEquals(2, resultado.get(0).getEnderecos().size());
         assertEquals("Rua 1", resultado.get(0).getEnderecos().get(0).getRua());
     }
@@ -116,7 +116,7 @@ public void deveAtualizarPessoa() {
     Pessoa pessoaAtualizada = Pessoa.builder()
             .id(1L)
             .nome("Nome Atualizado")
-            .CPF("123.456.789-00")
+            .cpf("123.456.789-00")
             .dataNascimento(LocalDate.of(2000, 1, 1))
             .enderecos(List.of(endereco1))
             .build();
@@ -126,7 +126,7 @@ public void deveAtualizarPessoa() {
     PessoaDTO pessoaDTOAtualizada = pessoaMappers.toDto(pessoaAtualizada);
     pessoaDTOAtualizada.setId(1L);
 
-    PessoaDTO resultado = pessoaService.atualizarPessoa(pessoaDTOAtualizada);
+    PessoaDTO resultado = pessoaService.atualizarPessoa(1L, pessoaDTOAtualizada);
 
     verify(pessoaRepository).save(any(Pessoa.class));
 

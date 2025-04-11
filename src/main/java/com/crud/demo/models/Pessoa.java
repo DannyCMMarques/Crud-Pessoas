@@ -32,7 +32,7 @@ public class Pessoa {
 
     private String nome;
 
-    private String CPF;
+    private String cpf;
 
     private LocalDate dataNascimento;
 

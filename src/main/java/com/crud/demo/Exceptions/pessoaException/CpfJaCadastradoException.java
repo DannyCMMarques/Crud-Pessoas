@@ -9,6 +9,6 @@ public class CpfJaCadastradoException extends ApiException  {
 
     public CpfJaCadastradoException() {
 
-        super("CPF já cadastrado", HttpStatus.CONFLICT);
+        super("cpf já cadastrado", HttpStatus.CONFLICT);
     }
 }

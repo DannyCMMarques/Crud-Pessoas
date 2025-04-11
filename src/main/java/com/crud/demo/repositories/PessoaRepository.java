@@ -11,5 +11,5 @@ import com.crud.demo.models.Pessoa;
 @Repository
 public interface PessoaRepository extends JpaRepository<Pessoa, Long>{
 
-Optional<Pessoa> findByCPF(String cPF);
+Optional<Pessoa> findBycpf(String cpf);
 }

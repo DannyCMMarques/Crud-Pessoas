@@ -27,7 +27,7 @@ public class PessoaServiceImpl implements PessoaService {
     public PessoaDTO criarPessoa(PessoaDTO pessoaDTO) {
 
         Pessoa pessoa = pessoaMappers.toEntity(pessoaDTO);
-        pessoaValidator.validarCadastro(pessoa.getCPF());
+        pessoaValidator.validarCadastro(pessoa.getCpf());
 
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
         return pessoaMappers.toDto(pessoaSalva);
@@ -56,9 +56,9 @@ public void deletarPessoa(Long id) {
     }
 
     @Override
-public PessoaDTO atualizarPessoa(PessoaDTO pessoaDTO) {
+public PessoaDTO atualizarPessoa(Long id, PessoaDTO pessoaDTO) {
         Pessoa pessoa = pessoaMappers.toEntity(pessoaDTO);
-        pessoaValidator.validarExistencia(pessoa.getId());
+        pessoaValidator.validarExistencia(id);
        Pessoa pessoaAtualizada= pessoaRepository.save(pessoa);
 return pessoaMappers.toDto(pessoaAtualizada);
     }

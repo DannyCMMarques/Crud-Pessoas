@@ -10,5 +10,5 @@ PessoaDTO criarPessoa(PessoaDTO pessoaDTO);
 PessoaDTO buscarPessoaPorId(Long id);
 List<PessoaDTO> buscarTodasPessoas();
 void deletarPessoa(Long id);
-PessoaDTO atualizarPessoa(PessoaDTO pessoaDTO);
+PessoaDTO atualizarPessoa(Long id,PessoaDTO pessoaDTO);
 }

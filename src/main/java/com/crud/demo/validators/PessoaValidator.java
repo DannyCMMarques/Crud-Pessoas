@@ -18,7 +18,7 @@ public class PessoaValidator {
 
     public void validarCadastro(String cpf) {
 
-        Optional<Pessoa> clienteCadastrado = pessoaRepository.findByCPF(cpf);
+        Optional<Pessoa> clienteCadastrado = pessoaRepository.findBycpf(cpf);
         if (clienteCadastrado.isPresent()) {
             throw new CpfJaCadastradoException();
         }
