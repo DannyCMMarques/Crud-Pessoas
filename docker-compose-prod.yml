@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: postgres_db
+    restart: always
+    environment:
+      - 'POSTGRES_DB=crudPessoas'
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=password'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crudPessoas-network
+
+  app:
+    build: .
+    container_name: spring_app
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/crudPessoas
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_PROFILES_ACTIVE: docker
+
+    ports:
+      - "8080:8080"
+    networks:
+      - crudPessoas-network
+
+networks:
+  crudPessoas-network:
+    driver: bridge
+
+
+volumes:
+  postgres_data:
