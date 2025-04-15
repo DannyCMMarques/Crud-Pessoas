@@ -1,8 +1,5 @@
 package com.crud.demo.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.crud.demo.models.DTO.PessoaDTO;
 import com.crud.demo.utils.TestDataFactory;
@@ -66,7 +69,7 @@ public class PessoaControllerIntegrationTest {
 
         PessoaDTO pessoaCriada = objectMapper.readValue(result.getResponse().getContentAsString(), PessoaDTO.class);
 
-        mockMvc.perform(get("/pessoas/" + pessoaCriada.getId()))
+        mockMvc.perform(get(TestDataFactory.URL_BASE + "/" + pessoaCriada.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome").value(TestDataFactory.NOME_PADRAO))
                 .andExpect(jsonPath("$.cpf").value(TestDataFactory.CPF_PURO));
@@ -89,7 +92,7 @@ public class PessoaControllerIntegrationTest {
 
         String jsonAtualizado = objectMapper.writeValueAsString(pessoaCriada);
 
-        mockMvc.perform(put("/pessoas/" + pessoaCriada.getId())
+        mockMvc.perform(put(TestDataFactory.URL_BASE + "/" + pessoaCriada.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonAtualizado))
                 .andExpect(status().isOk())
@@ -109,10 +112,10 @@ public class PessoaControllerIntegrationTest {
 
         PessoaDTO pessoaCriada = objectMapper.readValue(result.getResponse().getContentAsString(), PessoaDTO.class);
 
-        mockMvc.perform(delete("/pessoas/" + pessoaCriada.getId()))
+        mockMvc.perform(delete(TestDataFactory.URL_BASE + "/" + pessoaCriada.getId()))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/pessoas/" + pessoaCriada.getId()))
+        mockMvc.perform(get(TestDataFactory.URL_BASE + pessoaCriada.getId()))
                 .andExpect(status().isNotFound());
     }
     @Test

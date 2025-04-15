@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.PessoaDTO;
+import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.mappers.PessoaMappers;
 import com.crud.demo.repositories.PessoaRepository;
 import com.crud.demo.services.contratos.PessoaService;
@@ -54,10 +54,13 @@ public void deletarPessoa(Long id) {
     }
 
     @Override
-public PessoaDTO atualizarPessoa(Long id, PessoaDTO pessoaDTO) {
-        Pessoa pessoa = pessoaMappers.toEntity(pessoaDTO);
+    public PessoaDTO atualizarPessoa(Long id, PessoaDTO pessoaDTO) {
         pessoaValidator.validarExistencia(id);
-       Pessoa pessoaAtualizada= pessoaRepository.save(pessoa);
-return pessoaMappers.toDto(pessoaAtualizada);
+
+        Pessoa pessoa = pessoaMappers.toEntity(pessoaDTO);
+        pessoa.setId(id);
+
+        Pessoa pessoaAtualizada = pessoaRepository.save(pessoa);
+        return pessoaMappers.toDto(pessoaAtualizada);
     }
 }

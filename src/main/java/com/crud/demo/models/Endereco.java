@@ -33,6 +33,6 @@ private String cidade;
 
 private String estado;
 
-private String CEP;
+private String cep;
 
 }
