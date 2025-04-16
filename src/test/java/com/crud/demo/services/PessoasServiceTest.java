@@ -1,24 +1,27 @@
 package com.crud.demo.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
-import com.crud.demo.models.DTO.PessoaDTO;
 import com.crud.demo.models.Pessoa;
+import com.crud.demo.models.DTO.PessoaDTO;
 import com.crud.demo.models.mappers.EnderecoMapper;
 import com.crud.demo.models.mappers.PessoaMappers;
 import com.crud.demo.repositories.EnderecoRepository;
@@ -28,8 +31,8 @@ import com.crud.demo.validators.PessoaValidator;
 
 @ExtendWith(MockitoExtension.class)
 public class PessoasServiceTest {
-@InjectMocks
-  private PessoaServiceImpl pessoaService;
+    @InjectMocks
+    private PessoaServiceImpl pessoaService;
     @Mock
     private PessoaRepository pessoaRepository;
 
@@ -43,8 +46,6 @@ public class PessoasServiceTest {
     private EnderecoMapper enderecoMapper;
 
     private PessoaMappers pessoaMappers;
-
-
 
     private Pessoa pessoa;
     private PessoaDTO pessoaDTO;
@@ -61,6 +62,10 @@ public class PessoasServiceTest {
     @Test
     @DisplayName("Deve salvar uma pessoa com dois endereços corretamente")
     public void deveCriarPessoaCorretamente() {
+        // Garante que pessoa e pessoaDTO estejam populados corretamente
+        assertNotNull(pessoa);
+        assertNotNull(pessoa.getEnderecos());
+
         when(enderecoMapper.toEntityList(any())).thenReturn(pessoa.getEnderecos());
         when(enderecoMapper.toDtoList(any())).thenReturn(pessoaDTO.getEnderecos());
         when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoa);
@@ -90,17 +95,18 @@ public class PessoasServiceTest {
 
     @Test
     @DisplayName("Deve buscar todas as pessoas")
-    public void deveRetornarTodasPessoas() {
-        when(pessoaRepository.findAll()).thenReturn(List.of(pessoa));
+    public void deveRetornarTodasPessoas2() {
+        when(pessoaRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<Pessoa>(List.of(pessoa)));
         when(enderecoMapper.toDtoList(any())).thenReturn(pessoaDTO.getEnderecos());
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("nome").ascending());
 
-        List<PessoaDTO> resultado = pessoaService.buscarTodasPessoas();
+        Page<PessoaDTO> resultado = pessoaService.filtrarPessoas(null, null, null, null, null, null, pageable);
 
-        verify(pessoaRepository).findAll();
-        assertEquals(1, resultado.size());
-        assertEquals(pessoa.getNome(), resultado.get(0).getNome());
-        assertEquals(pessoa.getCpf(), resultado.get(0).getCpf());
-        assertEquals(2, resultado.get(0).getEnderecos().size());
+        assertEquals(1, resultado.getContent().size());
+        assertEquals(pessoa.getNome(), resultado.getContent().get(0).getNome());
+        assertEquals(pessoa.getCpf(), resultado.getContent().get(0).getCpf());
+        assertEquals(2, resultado.getContent().get(0).getEnderecos().size());
     }
 
     @Test
@@ -117,8 +123,7 @@ public class PessoasServiceTest {
         when(pessoaValidator.validarExistencia(1L)).thenReturn(pessoa);
         when(enderecoMapper.toEntityList(any())).thenReturn(pessoaAtualizada.getEnderecos());
         when(enderecoMapper.toDtoList(any())).thenReturn(
-                List.of(TestDataFactory.criarEnderecoDTO1())
-        );
+                List.of(TestDataFactory.criarEnderecoDTO1()));
         when(pessoaRepository.save(any(Pessoa.class))).thenReturn(pessoaAtualizada);
 
         PessoaDTO resultado = pessoaService.atualizarPessoa(1L, pessoaDTO);
