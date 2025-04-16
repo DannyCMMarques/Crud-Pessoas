@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.PessoaDTO;
+import com.crud.demo.models.Pessoa;
 
 import lombok.RequiredArgsConstructor;
 

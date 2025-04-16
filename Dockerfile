@@ -19,4 +19,5 @@ COPY --from=build /app/target/*.jar .
 
 COPY --from=build /app/resources /app/resources
 
-ENTRYPOINT ["sh", "-c", "java -jar -Dspring.profiles.active=${ENVIRONMENT} $(ls *.jar)"]
+ENTRYPOINT ["java", "-jar", "demo-0.0.1-SNAPSHOT.jar"]
+EXPOSE 8080

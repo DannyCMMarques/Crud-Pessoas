@@ -18,7 +18,7 @@ public class EnderecoMapper {
                 .bairro(dto.getBairro())
                 .cidade(dto.getCidade())
                 .estado(dto.getEstado())
-                .CEP(dto.getCEP())
+                .cep(dto.getCep())
                 .build();
     }
 
@@ -30,7 +30,7 @@ public class EnderecoMapper {
         dto.setBairro(entity.getBairro());
         dto.setCidade(entity.getCidade());
         dto.setEstado(entity.getEstado());
-        dto.setCEP(entity.getCEP());
+        dto.setCep(entity.getCep());
         return dto;
     }
 

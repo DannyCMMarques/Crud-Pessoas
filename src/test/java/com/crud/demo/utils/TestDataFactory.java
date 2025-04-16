@@ -3,17 +3,17 @@ package com.crud.demo.utils;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.crud.demo.models.Endereco;
-import com.crud.demo.models.Pessoa;
 import com.crud.demo.models.DTO.EnderecoDTO;
 import com.crud.demo.models.DTO.PessoaDTO;
+import com.crud.demo.models.Endereco;
+import com.crud.demo.models.Pessoa;
 
 public class TestDataFactory {
 
     public static final String CPF_PURO = "12345678900";
     public static final String NOME_PADRAO = "João da Silva";
     public static final LocalDate DATA_NASCIMENTO = LocalDate.of(1990, 5, 10);
-    public static final String URL_BASE = "/pessoas";
+    public static final String URL_BASE = "/api/v1/pessoas";
     public static final String NOME_ATUALIZADO = "Nome Atualizado";
 
     public static PessoaDTO criarPessoaDTOValida() {
@@ -34,7 +34,7 @@ public class TestDataFactory {
                 .bairro("Centro")
                 .cidade("Itaperuna")
                 .estado("RJ")
-                .CEP("28300-000")
+                .cep("28300-000")
                 .build();
     }
 
@@ -45,7 +45,7 @@ public class TestDataFactory {
                 .bairro("Boa Vista")
                 .cidade("Campos dos Goytacazes")
                 .estado("RJ")
-                .CEP("28000-000")
+                .cep("28000-000")
                 .build();
     }
 
@@ -66,7 +66,7 @@ public class TestDataFactory {
                 .bairro("Bairro 1")
                 .cidade("Cidade 1")
                 .estado("Estado 1")
-                .CEP("12345-678")
+                .cep("12345-678")
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class TestDataFactory {
                 .bairro("Bairro 2")
                 .cidade("Cidade 2")
                 .estado("Estado 2")
-                .CEP("98765-432")
+                .cep("98765-432")
                 .build();
     }
 }

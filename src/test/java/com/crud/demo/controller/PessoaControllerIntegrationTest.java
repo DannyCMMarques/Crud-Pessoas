@@ -66,7 +66,7 @@ public class PessoaControllerIntegrationTest {
 
         PessoaDTO pessoaCriada = objectMapper.readValue(result.getResponse().getContentAsString(), PessoaDTO.class);
 
-        mockMvc.perform(get("/pessoas/" + pessoaCriada.getId()))
+        mockMvc.perform(get(TestDataFactory.URL_BASE + "/" + pessoaCriada.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome").value(TestDataFactory.NOME_PADRAO))
                 .andExpect(jsonPath("$.cpf").value(TestDataFactory.CPF_PURO));
@@ -89,7 +89,7 @@ public class PessoaControllerIntegrationTest {
 
         String jsonAtualizado = objectMapper.writeValueAsString(pessoaCriada);
 
-        mockMvc.perform(put("/pessoas/" + pessoaCriada.getId())
+        mockMvc.perform(put(TestDataFactory.URL_BASE + "/" + pessoaCriada.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonAtualizado))
                 .andExpect(status().isOk())
@@ -109,10 +109,10 @@ public class PessoaControllerIntegrationTest {
 
         PessoaDTO pessoaCriada = objectMapper.readValue(result.getResponse().getContentAsString(), PessoaDTO.class);
 
-        mockMvc.perform(delete("/pessoas/" + pessoaCriada.getId()))
+        mockMvc.perform(delete(TestDataFactory.URL_BASE + "/" + pessoaCriada.getId()))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/pessoas/" + pessoaCriada.getId()))
+        mockMvc.perform(get(TestDataFactory.URL_BASE + pessoaCriada.getId()))
                 .andExpect(status().isNotFound());
     }
     @Test
@@ -127,6 +127,6 @@ public class PessoaControllerIntegrationTest {
 
         mockMvc.perform(get(TestDataFactory.URL_BASE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.content.length()").value(1));
     }
 }
