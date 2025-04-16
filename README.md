@@ -67,7 +67,31 @@ Após subir o projeto, acesse a documentação da API em:
 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
+## 🧪 Testes
 
+- ✅ **Integração no Controller**  
+  Testes com `@SpringBootTest` e `MockMvc` validando os endpoints da `PessoaController`, cobrindo requisições reais, respostas esperadas e tratamento de exceções como pessoa não encontrada.
+
+- ✅ **Unitários no Service**  
+  Testes com `Mockito` simulando os repositórios para validar a lógica da `PessoaServiceImpl`: criação, atualização, exclusão e exibição.
+
+### ▶️ Como Rodar os Testes
+
+Para executar todos os testes da aplicação, utilize o seguinte comando:
+
+```bash
+./mvnw test
+```
+
+Ou, se estiver utilizando Maven instalado globalmente:
+
+```bash
+mvn test
+```
+
+> 💡 Os testes automatizados são executados com banco de dados H2 em memória e não requerem nenhuma configuração adicional.
+
+---
 ## 📁 Estrutura de Diretórios
 ```bash
 
@@ -130,12 +154,4 @@ src
 ```
 ---
 
-## 🧪 Testes
 
-- ✅ **Integração no Controller**  
-  Testes com `@SpringBootTest` e `MockMvc` validando os endpoints da `PessoaController`, cobrindo requisições reais, respostas esperadas e tratamento de exceções como pessoa não encontrada.
-
-- ✅ **Unitários no Service**  
-  Testes com `Mockito` simulando os repositórios para validar a lógica da `PessoaServiceImpl`: criação, atualização, exclusão e exibição.
-
----
