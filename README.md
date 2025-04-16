@@ -1,8 +1,16 @@
+
 # 🧾 CRUD de Pessoa e Endereço – Spring Boot
 
 ## 📋 Descrição
 
 API RESTful com Java + Spring Boot que realiza operações de cadastro, listagem, atualização e exclusão para pessoas e seus endereços. Inclui validações, cálculo automático de idade e uso de boas práticas como DTOs, mappers e testes de integração.
+
+Foi integrado o Swagger à aplicação para documentar adequadamente a API, conforme as boas práticas.  
+Também foi criado o arquivo `PessoaSpecifications`, responsável pela implementação de filtros dinâmicos para buscas por critérios como **nome**, **CPF**, **cidade**, **estado** e **bairro**.  
+
+Além disso, duas novas rotas foram adicionadas:  
+- Uma para retornar os aniversariantes do **dia atual**  
+- Outra para filtrar os aniversariantes de um **mês específico**
 
 ---
 
@@ -28,8 +36,9 @@ API RESTful com Java + Spring Boot que realiza operações de cadastro, listagem
 - [x] Excluir pessoa com seus endereços
 - [x] Validar campos obrigatórios e CPF duplicado
 - [x] Exibir idade automaticamente calculada no JSON
+- [x] Filtros dinâmicos
+- [x] Retorno dos aniversariantes dos dias
 
----
 ---
 
 ## 🐳 Como Rodar o Projeto
@@ -51,112 +60,16 @@ Certifique-se de que o **Docker Desktop** está em execução.
 docker compose build
 docker compose up
 ```
----
 
-## 🔁 Endpoints da API
+### 4. Acesse o Swagger
 
-| Método | Endpoint             | Descrição                                 |
-|--------|----------------------|-------------------------------------------|
-| POST   | `/pessoas`           | Cadastrar nova pessoa com endereços       |
-| GET    | `/pessoas`           | Listar todas as pessoas                   |
-| GET    | `/pessoas/{id}`      | Buscar pessoa por ID                      |
-| PUT    | `/pessoas/{id}`      | Atualizar pessoa e/ou seus endereços      |
-| DELETE | `/pessoas/{id}`      | Excluir pessoa e todos os seus endereços  |
-
-### 📤 Exemplo de Requisição POST `/pessoas`
-
-```json
-{
-  "nome": "Maria Oliveira",
-  "cpf": "98765432100",
-  "dataNascimento": "1985-11-25",
-  "enderecos": [
-    {
-      "rua": "Rua Amapá",
-      "numero": 50,
-      "bairro": "Jardim das Acácias",
-      "cidade": "Niterói",
-      "estado": "RJ",
-      "cep": "24030-000"
-    },
-    {
-      "rua": "Travessa São João",
-      "numero": 200,
-      "bairro": "Centro",
-      "cidade": "São Gonçalo",
-      "estado": "RJ",
-      "cep": "24710-000"
-    }
-  ]
-}
-```
-
-### 📥 Exemplo de Resposta GET `/pessoas`
-
-```json
-[
-  {
-    "id": 6,
-    "nome": "João da Silva",
-    "cpf": "12345678900",
-    "dataNascimento": "1990-05-10",
-    "enderecos": [
-      {
-        "id": 5,
-        "rua": "Rua das Flores",
-        "numero": 123,
-        "bairro": "Centro",
-        "cidade": "Itaperuna",
-        "estado": "RJ",
-        "cep": "28300-000"
-      },
-      {
-        "id": 6,
-        "rua": "Avenida Brasil",
-        "numero": 456,
-        "bairro": "Boa Vista",
-        "cidade": "Campos",
-        "estado": "RJ",
-        "cep": "28000-000"
-      }
-    ],
-    "idade": 34
-  },
-  {
-    "id": 7,
-    "nome": "Maria Oliveira",
-    "cpf": "98765432100",
-    "dataNascimento": "1985-11-25",
-    "enderecos": [
-      {
-        "id": 9,
-        "rua": "Rua Amapá",
-        "numero": 50,
-        "bairro": "Jardim das Acácias",
-        "cidade": "Niterói",
-        "estado": "RJ",
-        "cep": "24030-000"
-      },
-      {
-        "id": 10,
-        "rua": "Travessa São João",
-        "numero": 200,
-        "bairro": "Centro",
-        "cidade": "São Gonçalo",
-        "estado": "RJ",
-        "cep": "24710-000"
-      }
-    ],
-    "idade": 39
-  }
-]
-```
+Após subir o projeto, acesse a documentação da API em:  
+[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
 
 ## 📁 Estrutura de Diretórios
 
-```bash
 src
 └── main
     └── java
@@ -165,52 +78,37 @@ src
                 └── demo
                     ├── controllers
                     │   └── PessoaControllador.java
-                    │
-                    │
                     ├── Exceptions
                     │   ├── handler
                     │   │   └── GlobalExceptionHandler.java
-                    │   │   # Trata exceções globais com mensagens padronizadas.
                     │   ├── pessoaException
                     │   │   ├── CpfJaCadastradoException.java
                     │   │   └── PessoaNaoEncontradaException.java
                     │   ├── ApiException.java
                     │   └── RestErrorMessage.java
-                    │   # Auxiliam no tratamento e compreensão de erros pela equipe de desenvolvimento.
-                    │
                     ├── models
                     │   ├── dto
                     │   │   ├── EnderecoDTO.java
                     │   │   └── PessoaDTO.java
-                    │   │  # Utilizei DTOs para separar a entidade da interface da API, mesmo sendo um CRUD simples,
-                    │   │   # por ser uma boa prática. Também incluí validações (@NotNull, @Size, etc.) nos DTOs
-                    │   │   # para garantir a integridade dos dados antes de chegarem ao serviço.
-                    │   │   # Além disso, na PessoaDTO implementei a exibição da idade de forma calculada apenas
-                    │   │   # para leitura no JSON, mantendo o campo como somente leitura com @JsonProperty.
                     │   ├── mappers
                     │   │   ├── EnderecoMapper.java
                     │   │   └── PessoaMappers.java
-                    │   │
                     │   ├── Endereco.java
                     │   └── Pessoa.java
-                    │
                     ├── repositories
                     │   ├── EnderecoRepository.java
                     │   └── PessoaRepository.java
-                    │   # Interfaces que extendem JpaRepository, fornecendo métodos prontos para CRUD e consultas customizadas.
-                    │
                     ├── services
                     │   ├── contratos
-                    │   │   └── PessoaService.java  # Define a interface com as regras de negócio expostas pelos serviços.
+                    │   │   └── PessoaService.java
                     │   └── PessoaServiceImpl.java
-                            
-                    │
+                    ├── specifications
+                    │   └── PessoaSpecifications.java
                     ├── validators
                     │   └── PessoaValidator.java
-                    │   # Validações adicionais como CPF duplicado e existência da pessoa.
-                    │
                     └── DemoApplication.java
-```
+
+---
 
 ## 🧪 Testes
 
@@ -220,8 +118,4 @@ src
 - ✅ **Unitários no Service**  
   Testes com `Mockito` simulando os repositórios para validar a lógica da `PessoaServiceImpl`: criação, atualização, exclusão e exibição.
 
-<img src="https://github.com/user-attachments/assets/af283c3d-511a-4a60-979f-635acd662b1a" width="500"/>
-
 ---
-
-
