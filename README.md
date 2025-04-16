@@ -69,6 +69,7 @@ Após subir o projeto, acesse a documentação da API em:
 ---
 
 ## 📁 Estrutura de Diretórios
+```bash
 
 src
 └── main
@@ -78,36 +79,55 @@ src
                 └── demo
                     ├── controllers
                     │   └── PessoaControllador.java
+                    │
                     ├── Exceptions
                     │   ├── handler
                     │   │   └── GlobalExceptionHandler.java
+                    │   │   # Trata exceções globais com mensagens padronizadas.
                     │   ├── pessoaException
                     │   │   ├── CpfJaCadastradoException.java
                     │   │   └── PessoaNaoEncontradaException.java
                     │   ├── ApiException.java
                     │   └── RestErrorMessage.java
+                    │   # Auxiliam no tratamento e compreensão de erros pela equipe de desenvolvimento.
+                    │
                     ├── models
                     │   ├── dto
                     │   │   ├── EnderecoDTO.java
                     │   │   └── PessoaDTO.java
+                    │   │   # Utilizei DTOs para separar a entidade da interface da API, mesmo sendo um CRUD simples,
+                    │   │   # por ser uma boa prática. Também incluí validações (@NotNull, @Size, etc.) nos DTOs
+                    │   │   # para garantir a integridade dos dados antes de chegarem ao serviço.
+                    │   │   # Além disso, na PessoaDTO implementei a exibição da idade de forma calculada apenas
+                    │   │   # para leitura no JSON, mantendo o campo como somente leitura com @JsonProperty.
                     │   ├── mappers
                     │   │   ├── EnderecoMapper.java
                     │   │   └── PessoaMappers.java
+                    │   │
                     │   ├── Endereco.java
                     │   └── Pessoa.java
+                    │
                     ├── repositories
                     │   ├── EnderecoRepository.java
                     │   └── PessoaRepository.java
+                    │   # Interfaces que extendem JpaRepository, fornecendo métodos prontos para CRUD e consultas customizadas.
+                    │
                     ├── services
                     │   ├── contratos
-                    │   │   └── PessoaService.java
+                    │   │   └── PessoaService.java  # Define a interface com as regras de negócio expostas pelos serviços.
                     │   └── PessoaServiceImpl.java
+                    │
                     ├── specifications
                     │   └── PessoaSpecifications.java
+                    │   # Classe responsável por implementar filtros dinâmicos usando Specification para a entidade Pessoa.
+                    │
                     ├── validators
                     │   └── PessoaValidator.java
+                    │   # Validações adicionais como CPF duplicado e existência da pessoa.
+                    │
                     └── DemoApplication.java
 
+```
 ---
 
 ## 🧪 Testes
